@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { GraduationCap, ArrowRight, Sparkles } from "lucide-react"
+import Link from "next/link"
 
 export function HeroSection() {
   return (
@@ -87,7 +88,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto"
           >
-            Số hóa toàn bộ quy trình tổ chức và quản lý kỳ thi. 
+            Số hóa quy trình quản lý kỳ thi, học viên và điểm số.
             Giảm thiểu sai sót, tiết kiệm thời gian, nâng cao hiệu quả quản lý.
           </motion.p>
 
@@ -98,14 +99,18 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Button size="lg" className="group">
-              <GraduationCap className="mr-2 h-5 w-5" />
-              Bắt đầu ngay
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button size="lg" variant="outline">
-              Tìm hiểu thêm
-            </Button>
+            <Link href="/login">
+              <Button size="lg" className="group">
+                <GraduationCap className="mr-2 h-5 w-5" />
+                Đăng nhập
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <Link href="/register">
+              <Button size="lg" variant="outline">
+                Đăng ký ngay
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Stats */}

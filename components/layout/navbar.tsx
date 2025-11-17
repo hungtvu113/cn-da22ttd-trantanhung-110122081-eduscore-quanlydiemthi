@@ -3,16 +3,8 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { GraduationCap, Menu, X, LogIn, UserPlus } from "lucide-react"
+import { GraduationCap, Menu, X, LogIn, UserPlus, Mail } from "lucide-react"
 import Link from "next/link"
-
-const navLinks = [
-  { href: "/", label: "Trang chủ" },
-  { href: "#features", label: "Tính năng" },
-  { href: "#roles", label: "Vai trò" },
-  { href: "#about", label: "Giới thiệu" },
-  { href: "#contact", label: "Liên hệ" },
-]
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -36,31 +28,23 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-              </Link>
-            ))}
-          </div>
-
-          {/* Desktop Auth Buttons */}
+          {/* Desktop Navigation - Right Side */}
           <div className="hidden md:flex items-center gap-3">
+            <Link href="#contact">
+              <Button variant="ghost" className="gap-2">
+                <Mail className="w-4 h-4" />
+                Liên hệ
+              </Button>
+            </Link>
             <Link href="/login">
-              <Button variant="ghost">
-                <LogIn className="w-4 h-4 mr-2" />
+              <Button variant="ghost" className="gap-2">
+                <LogIn className="w-4 h-4" />
                 Đăng nhập
               </Button>
             </Link>
             <Link href="/register">
-              <Button>
-                <UserPlus className="w-4 h-4 mr-2" />
+              <Button className="gap-2">
+                <UserPlus className="w-4 h-4" />
                 Đăng ký
               </Button>
             </Link>
@@ -90,31 +74,25 @@ export function Navbar() {
             transition={{ duration: 0.3 }}
             className="md:hidden border-t bg-background/95 backdrop-blur-lg"
           >
-            <div className="container mx-auto px-4 py-4 space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-4 space-y-2 border-t">
-                <Link href="/login" onClick={() => setIsOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Đăng nhập
-                  </Button>
-                </Link>
-                <Link href="/register" onClick={() => setIsOpen(false)}>
-                  <Button className="w-full">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Đăng ký
-                  </Button>
-                </Link>
-              </div>
+            <div className="container mx-auto px-4 py-4 space-y-2">
+              <Link href="#contact" onClick={() => setIsOpen(false)}>
+                <Button variant="outline" className="w-full gap-2">
+                  <Mail className="w-4 h-4" />
+                  Liên hệ
+                </Button>
+              </Link>
+              <Link href="/login" onClick={() => setIsOpen(false)}>
+                <Button variant="outline" className="w-full gap-2">
+                  <LogIn className="w-4 h-4" />
+                  Đăng nhập
+                </Button>
+              </Link>
+              <Link href="/register" onClick={() => setIsOpen(false)}>
+                <Button className="w-full gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  Đăng ký
+                </Button>
+              </Link>
             </div>
           </motion.div>
         )}

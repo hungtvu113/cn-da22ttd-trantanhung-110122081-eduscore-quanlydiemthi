@@ -30,17 +30,24 @@ const features = [
   },
   {
     icon: FileText,
-    title: "Đăng ký Dự thi",
-    description: "Học viên có thể đăng ký thi trực tuyến, xem lịch thi và thông tin chi tiết.",
+    title: "Quản lý Học viên",
+    description: "Quản lý thông tin học viên, tìm kiếm và theo dõi lịch sử thi của từng học viên.",
     color: "text-accent",
     bgColor: "bg-accent/10",
   },
   {
-    icon: BarChart3,
-    title: "Thống kê & Báo cáo",
-    description: "Xem biểu đồ, thống kê kết quả và xuất báo cáo Excel/PDF chuyên nghiệp.",
+    icon: CheckCircle2,
+    title: "Nhập điểm Nhanh chóng",
+    description: "Nhập điểm thủ công hoặc import hàng loạt từ file Excel, tiết kiệm thời gian.",
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
+  },
+  {
+    icon: BarChart3,
+    title: "Thống kê & Báo cáo",
+    description: "Xem biểu đồ, thống kê kết quả và xuất báo cáo Excel chuyên nghiệp.",
+    color: "text-chart-5",
+    bgColor: "bg-chart-5/10",
   },
   {
     icon: Shield,
@@ -52,21 +59,14 @@ const features = [
   {
     icon: Zap,
     title: "Hiệu suất Cao",
-    description: "Xử lý nhanh chóng, giao diện mượt mà với công nghệ Next.js hiện đại.",
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
-  },
-  {
-    icon: CheckCircle2,
-    title: "Chấm điểm Tự động",
-    description: "Hỗ trợ thi trắc nghiệm trực tuyến với chấm điểm tự động và ngẫu nhiên câu hỏi.",
+    description: "Xử lý nhanh chóng, giao diện mượt mà với công nghệ Next.js và MongoDB.",
     color: "text-primary",
     bgColor: "bg-primary/10",
   },
   {
     icon: Clock,
     title: "Tiết kiệm Thời gian",
-    description: "Tự động hóa quy trình, giảm thiểu công việc thủ công và sai sót.",
+    description: "Giảm thiểu công việc thủ công, tra cứu điểm nhanh chóng, chính xác.",
     color: "text-secondary",
     bgColor: "bg-secondary/10",
   },
@@ -108,8 +108,8 @@ export function FeaturesSection() {
             Tính năng nổi bật
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Hệ thống quản lý kỳ thi toàn diện với đầy đủ tính năng cần thiết
-            cho việc tổ chức thi hiện đại
+            Hệ thống quản lý kỳ thi với đầy đủ tính năng cần thiết
+            cho việc quản lý điểm và thông tin học viên hiệu quả
           </p>
         </motion.div>
 

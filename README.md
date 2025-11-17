@@ -2,56 +2,54 @@
 
 ## 📖 Giới thiệu
 
-QuizHub là một hệ thống quản lý kỳ thi toàn diện, được xây dựng nhằm số hóa toàn bộ quy trình tổ chức và quản lý kỳ thi cho các Trung tâm Ngoại ngữ - Tin học. Hệ thống giúp giảm thiểu sai sót, tiết kiệm thời gian và nâng cao hiệu quả quản lý so với phương pháp thủ công truyền thống.
+QuizHub là một hệ thống quản lý kỳ thi, được xây dựng nhằm số hóa quy trình quản lý thông tin kỳ thi, học viên và điểm số cho các Trung tâm Ngoại ngữ - Tin học. Hệ thống giúp giảm thiểu sai sót, tiết kiệm thời gian và nâng cao hiệu quả quản lý so với phương pháp thủ công truyền thống.
 
 ## 🎯 Mục tiêu
 
-- ✅ Tin học hóa toàn bộ quy trình tổ chức và quản lý kỳ thi
-- ✅ Quản lý kỳ thi, môn thi, thí sinh, giám thị và kết quả thi chính xác, minh bạch
-- ✅ Hỗ trợ đăng ký và tra cứu thông tin thi trực tuyến
+- ✅ Số hóa quy trình quản lý kỳ thi
+- ✅ Quản lý kỳ thi, môn thi, học viên và kết quả thi chính xác, minh bạch
+- ✅ Hỗ trợ nhập điểm nhanh chóng (thủ công hoặc import Excel)
+- ✅ Tra cứu điểm thi trực tuyến
 - ✅ Phân quyền người dùng rõ ràng (Admin - Giám thị - Học viên)
-- ✅ Thống kê, báo cáo và tìm kiếm dữ liệu nhanh chóng
-- ✅ Mở rộng khả năng thi trực tuyến, chấm điểm tự động
+- ✅ Thống kê, báo cáo và xuất dữ liệu Excel
 
 ## 👥 Đối tượng sử dụng
 
 ### 🔑 Admin (Quản trị viên)
 - Quản lý toàn bộ hệ thống
-- Thêm/sửa/xóa người dùng, môn thi, kỳ thi, phòng thi
-- Nhập điểm, duyệt điểm, công bố kết quả
-- Thống kê và xuất báo cáo Excel/PDF
+- Thêm/sửa/xóa người dùng, môn thi, kỳ thi
+- Quản lý học viên/thí sinh
+- Quản lý điểm thi (xem, sửa, xóa)
+- Thống kê và xuất báo cáo Excel
 
-### 👨‍🏫 Giám thị / Cán bộ chấm thi
-- Xem danh sách phòng thi và thí sinh
-- Ghi nhận tình trạng dự thi
-- Nhập và lưu điểm thi
+### 👨‍🏫 Giáo viên
+- Xem danh sách học viên
+- Nhập điểm thủ công hoặc import từ Excel
+- Lưu và cập nhật điểm thi
 
 ### 🎓 Học viên / Thí sinh
-- Đăng ký tài khoản và đăng nhập
-- Xem danh sách kỳ thi và đăng ký dự thi
-- Tra cứu kết quả thi
-- Gửi phản hồi
+- Đăng nhập vào hệ thống
+- Tra cứu điểm thi
+- Xem lịch sử các kỳ thi đã tham gia
+- Cập nhật thông tin cá nhân
 
 ## ✨ Tính năng chính
 
 ### Phiên bản 1.0 (Core Features)
 - 🔐 Đăng nhập/Đăng ký với phân quyền
 - 📚 Quản lý môn thi và kỳ thi
-- 🏫 Quản lý phòng thi và phân công giám thị
-- 👨‍🎓 Quản lý thí sinh và đăng ký dự thi
-- 📊 Nhập điểm và quản lý kết quả
-- 🔍 Tra cứu và tìm kiếm thông tin
+- 👨‍🎓 Quản lý học viên/thí sinh
+- 📊 Nhập điểm (thủ công hoặc import Excel)
+- 🔍 Tra cứu điểm thi
 - 📈 Thống kê và báo cáo
+- 📄 Xuất dữ liệu ra Excel
 
 ### Tính năng mở rộng (Roadmap)
-- 📝 Thi trắc nghiệm trực tuyến với ngẫu nhiên câu hỏi
+- 📝 Thi trắc nghiệm trực tuyến
 - 🤖 Chấm điểm tự động
 - 📧 Gửi email thông báo kết quả
-- 💳 Thanh toán lệ phí thi online
 - 🎖️ Tạo chứng chỉ điện tử
 - 📊 Biểu đồ thống kê kết quả (Chart.js)
-- 🤖 AI chấm bài tự luận/bài nói
-- 📄 OCR quét bài thi tự động
 
 ## 🛠️ Công nghệ sử dụng
 
@@ -70,8 +68,9 @@ QuizHub là một hệ thống quản lý kỳ thi toàn diện, được xây d
 - **Authentication**: JWT / Passport.js
 
 ### Database
-- **Database**: MySQL / MongoDB
-- **ORM**: Sequelize / Prisma
+- **Database**: MongoDB
+- **Cloud Database**: MongoDB Atlas
+- **ODM**: Mongoose
 
 ### Tools & Libraries
 - **Email**: NodeMailer
@@ -82,24 +81,20 @@ QuizHub là một hệ thống quản lý kỳ thi toàn diện, được xây d
 
 ## 📊 Cơ sở dữ liệu
 
-### Các bảng chính
+### Các collection chính (MongoDB)
 
 ```
 users           - Quản lý người dùng (Admin, Giám thị, Học viên)
 subjects        - Quản lý môn thi
 exams           - Quản lý kỳ thi
-rooms           - Quản lý phòng thi
-exam_rooms      - Phân công phòng thi và giám thị
-students        - Thông tin thí sinh
-registrations   - Đăng ký dự thi
+students        - Thông tin học viên/thí sinh
 scores          - Điểm số và kết quả
 ```
 
 ### Mối quan hệ
-- Một kỳ thi có nhiều phòng thi
-- Một phòng thi có một giám thị
-- Một thí sinh có thể đăng ký nhiều kỳ thi
-- Mỗi đăng ký có một kết quả điểm
+- Một kỳ thi thuộc một môn thi
+- Một học viên có thể có nhiều điểm thi
+- Mỗi điểm thi liên kết với một kỳ thi và một học viên
 
 ## 🏗️ Kiến trúc hệ thống
 
@@ -123,7 +118,7 @@ Hệ thống được xây dựng theo mô hình **3 lớp (3-tier architecture)
 ### Yêu cầu hệ thống
 - Node.js >= 18.x
 - npm/yarn/pnpm
-- MySQL >= 8.0 hoặc MongoDB >= 6.0
+- MongoDB >= 6.0 hoặc MongoDB Atlas account
 
 ### Cài đặt
 
@@ -161,7 +156,7 @@ quizhub/
 ├── app/                    # Next.js App Router
 │   ├── (auth)/            # Authentication routes
 │   ├── (admin)/           # Admin dashboard
-│   ├── (supervisor)/      # Supervisor dashboard
+│   ├── (teacher)/         # Teacher dashboard
 │   ├── (student)/         # Student portal
 │   ├── api/               # API routes
 │   ├── layout.tsx         # Root layout

@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { ArrowRight, Sparkles, LogIn, UserPlus } from "lucide-react"
+import Link from "next/link"
 
 export function CTASection() {
   return (
@@ -66,7 +67,7 @@ export function CTASection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-4xl md:text-6xl font-bold mb-6"
           >
-            Bắt đầu trải nghiệm ngay
+            Bắt đầu sử dụng ngay hôm nay
           </motion.h2>
 
           <motion.p
@@ -76,8 +77,8 @@ export function CTASection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto"
           >
-            Khám phá hệ thống quản lý kỳ thi hiện đại,
-            giúp số hóa quy trình tổ chức thi một cách hiệu quả
+            Đăng nhập để trải nghiệm hệ thống quản lý kỳ thi hiện đại,
+            giúp số hóa quy trình quản lý một cách hiệu quả
           </motion.p>
 
           {/* CTA Buttons */}
@@ -88,13 +89,19 @@ export function CTASection() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Button size="lg" className="group text-base px-8">
-              Xem Demo
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button size="lg" variant="outline" className="text-base px-8">
-              Tìm hiểu thêm
-            </Button>
+            <Link href="/login">
+              <Button size="lg" className="group text-base px-8">
+                <LogIn className="mr-2 h-5 w-5" />
+                Đăng nhập
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <Link href="/register">
+              <Button size="lg" variant="outline" className="text-base px-8">
+                <UserPlus className="mr-2 h-5 w-5" />
+                Đăng ký ngay
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Project info */}

@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/landing/hero-section"
 import { FeaturesSection } from "@/components/landing/features-section"
 import { RolesSection } from "@/components/landing/roles-section"
 import { CTASection } from "@/components/landing/cta-section"
+import { ContactSection } from "@/components/landing/contact-section"
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <FeaturesSection />
         <RolesSection />
         <CTASection />
+        <ContactSection />
       </main>
       <Footer />
     </div>
