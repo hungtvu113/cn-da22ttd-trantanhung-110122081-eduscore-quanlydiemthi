@@ -25,7 +25,7 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { icon: Github, href: "#", label: "GitHub Repository" },
+  { icon: Github, href: "https://github.com/hungtvu113/DoAnChuyenNganh", label: "GitHub Repository" },
   { icon: Facebook, href: "#", label: "Facebook" },
   { icon: Twitter, href: "#", label: "Twitter" },
   { icon: Linkedin, href: "#", label: "LinkedIn" },
