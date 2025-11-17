@@ -24,37 +24,37 @@ import {
 const navigation = [
   {
     name: "Dashboard",
-    href: "/dashboard",
+    href: "/admin/dashboard",
     icon: LayoutDashboard,
   },
   {
     name: "Quản lý Môn thi",
-    href: "/subjects",
+    href: "/admin/subjects",
     icon: BookOpen,
   },
   {
     name: "Quản lý Kỳ thi",
-    href: "/exams",
+    href: "/admin/exams",
     icon: Calendar,
   },
   {
     name: "Quản lý Học viên",
-    href: "/students",
+    href: "/admin/students",
     icon: Users,
   },
   {
     name: "Quản lý Điểm",
-    href: "/scores",
+    href: "/admin/scores",
     icon: FileText,
   },
   {
     name: "Thống kê & Báo cáo",
-    href: "/reports",
+    href: "/admin/reports",
     icon: BarChart3,
   },
   {
     name: "Quản lý Người dùng",
-    href: "/users",
+    href: "/admin/users",
     icon: UserCog,
   },
 ]
