@@ -9,6 +9,7 @@ import {
   importScores,
   getStudentsForExam,
   getMyScoreHistory,
+  cleanupOrphanScores,
 } from "../controllers/scoreController";
 import { protect, authorize } from "../middleware/auth";
 
@@ -32,6 +33,7 @@ router.post("/", authorize("admin", "teacher"), createScore);
 router.post("/import", authorize("admin", "teacher"), importScores);
 
 // Admin only
+router.delete("/cleanup-orphans", authorize("admin"), cleanupOrphanScores);
 router.delete("/:id", authorize("admin"), deleteScore);
 
 export default router;

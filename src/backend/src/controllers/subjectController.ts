@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Subject } from "../models";
+import { Subject, Exam, Score } from "../models";
 
 // @desc    Get all subjects
 // @route   GET /api/subjects
@@ -159,9 +159,21 @@ export const deleteSubject = async (
       return;
     }
 
+    // Cascade delete: Tìm tất cả kỳ thi của môn này
+    const exams = await Exam.find({ subject: req.params.id });
+    const examIds = exams.map((e) => e._id);
+
+    // Xóa tất cả điểm của các kỳ thi này
+    if (examIds.length > 0) {
+      await Score.deleteMany({ exam: { $in: examIds } });
+    }
+
+    // Xóa tất cả kỳ thi của môn này
+    await Exam.deleteMany({ subject: req.params.id });
+
     res.status(200).json({
       success: true,
-      message: "Xóa môn thi thành công!",
+      message: "Xóa môn thi và dữ liệu liên quan thành công!",
     });
   } catch (error) {
     console.error("Delete subject error:", error);

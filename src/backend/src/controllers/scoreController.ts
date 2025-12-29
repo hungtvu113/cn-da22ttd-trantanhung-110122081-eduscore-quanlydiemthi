@@ -506,3 +506,38 @@ export const getMyScoreHistory = async (
     });
   }
 };
+
+// @desc    Cleanup orphan scores (scores without valid exam)
+// @route   DELETE /api/scores/cleanup-orphans
+// @access  Private (Admin)
+export const cleanupOrphanScores = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // Lấy tất cả exam IDs hiện có
+    const exams = await Exam.find().select("_id");
+    const validExamIds = exams.map((e) => e._id);
+
+    // Xóa tất cả scores không có exam hợp lệ
+    const result = await Score.deleteMany({
+      $or: [
+        { exam: { $nin: validExamIds } },
+        { exam: null },
+        { exam: { $exists: false } },
+      ],
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Đã xóa ${result.deletedCount} điểm orphan.`,
+      data: { deletedCount: result.deletedCount },
+    });
+  } catch (error) {
+    console.error("Cleanup orphan scores error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi server khi xóa điểm orphan.",
+    });
+  }
+};
