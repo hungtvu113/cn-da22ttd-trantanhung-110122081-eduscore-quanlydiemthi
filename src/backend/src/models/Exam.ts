@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IExam extends Document {
   _id: mongoose.Types.ObjectId;
+  code: string; // Mã kỳ thi (unique)
   name: string; // Tên kỳ thi
   subject: mongoose.Types.ObjectId; // Môn thi
   examDate: Date; // Ngày thi
@@ -20,6 +21,11 @@ export interface IExam extends Document {
 
 const examSchema = new Schema<IExam>(
   {
+    code: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
     name: {
       type: String,
       required: [true, "Tên kỳ thi là bắt buộc"],
