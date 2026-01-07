@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Class } from "../models";
+import { Class, Exam, Notification } from "../models";
 
 // @desc    Get all classes
 // @route   GET /api/classes
@@ -292,7 +292,8 @@ export const removeStudent = async (req: Request, res: Response): Promise<void> 
 export const addExam = async (req: Request, res: Response): Promise<void> => {
   try {
     const { examId } = req.body;
-    const classData = await Class.findById(req.params.id);
+    const classData = await Class.findById(req.params.id)
+      .populate("students", "_id");
 
     if (!classData) {
       res.status(404).json({
@@ -313,6 +314,27 @@ export const addExam = async (req: Request, res: Response): Promise<void> => {
 
     classData.exams.push(examId);
     await classData.save();
+
+    // Lấy thông tin kỳ thi để tạo thông báo
+    const examInfo = await Exam.findById(examId).populate("subject", "name");
+    const subjectName = (examInfo?.subject as any)?.name || "Chưa xác định";
+    const examDateFormatted = examInfo?.examDate 
+      ? new Date(examInfo.examDate).toLocaleDateString("vi-VN") 
+      : "";
+
+    // Gửi thông báo cho tất cả sinh viên trong lớp
+    const studentIds = classData.students.map((s: any) => s._id || s);
+    
+    for (const studentId of studentIds) {
+      await Notification.create({
+        title: `Lịch thi mới: ${examInfo?.name || "Kỳ thi"}`,
+        message: `Môn ${subjectName} - Lớp ${classData.name} - Ngày thi: ${examDateFormatted}${examInfo?.room ? ` - Phòng: ${examInfo.room}` : ""}`,
+        type: "exam",
+        targetUser: studentId,
+        relatedId: examId,
+        relatedModel: "Exam",
+      });
+    }
 
     const updatedClass = await Class.findById(req.params.id)
       .populate("exams", "name examDate status");

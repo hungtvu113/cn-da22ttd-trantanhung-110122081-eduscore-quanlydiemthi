@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { Score, Exam, Class } from "../models";
+import { Score, Exam, Class, Notification } from "../models";
 
-// @desc    Get exams and scores for logged in student (based on joined classes)
+// @desc    Get exams and scores for logged in student (based on joined classes + public exams)
 // @route   GET /api/scores/my-exams
 // @access  Private (Student)
 export const getMyExamsAndScores = async (
@@ -10,7 +10,6 @@ export const getMyExamsAndScores = async (
 ): Promise<void> => {
   try {
     const studentId = req.user?._id;
-    console.log("Student ID:", studentId);
 
     // 1. Lấy tất cả lớp mà sinh viên đã tham gia
     const classes = await Class.find({ students: studentId })
@@ -20,14 +19,6 @@ export const getMyExamsAndScores = async (
       })
       .populate("subject", "code name")
       .populate("teacher", "name email");
-
-    console.log("Classes found:", classes.length);
-    console.log("Classes data:", JSON.stringify(classes.map((c: any) => ({
-      id: c._id,
-      name: c.name,
-      examsCount: c.exams?.length || 0,
-      exams: c.exams?.map((e: any) => e?.name || e)
-    })), null, 2));
 
     // 2. Lấy tất cả kỳ thi từ các lớp
     const examIds: string[] = [];
@@ -45,9 +36,20 @@ export const getMyExamsAndScores = async (
       }
     });
 
-    console.log("Exam IDs:", examIds);
+    // 3. Lấy kỳ thi chung mà sinh viên đã đăng ký
+    const publicExams = await Exam.find({
+      $or: [{ subject: { $exists: false } }, { subject: null }],
+      participants: studentId,
+    });
 
-    // 3. Lấy điểm của sinh viên cho các kỳ thi này
+    publicExams.forEach((exam: any) => {
+      const examId = exam._id.toString();
+      if (!examIds.includes(examId)) {
+        examIds.push(examId);
+      }
+    });
+
+    // 4. Lấy điểm của sinh viên cho tất cả kỳ thi
     const scores = await Score.find({
       student: studentId,
       exam: { $in: examIds },
@@ -64,7 +66,7 @@ export const getMyExamsAndScores = async (
       };
     });
 
-    // 4. Kết hợp dữ liệu
+    // 5. Kết hợp dữ liệu từ lớp học
     const result: any[] = [];
     classes.forEach((cls: any) => {
       if (cls.exams && Array.isArray(cls.exams)) {
@@ -92,16 +94,39 @@ export const getMyExamsAndScores = async (
               grade: scoreData?.grade ?? null,
               scoreStatus: scoreData?.status ?? "pending",
               note: scoreData?.note ?? "",
+              isPublicExam: false,
             });
           }
         });
       }
     });
 
+    // 6. Thêm kỳ thi chung vào kết quả
+    publicExams.forEach((exam: any) => {
+      const examId = exam._id.toString();
+      const scoreData = scoreMap[examId];
+
+      result.push({
+        examId: exam._id,
+        examName: exam.name,
+        examDate: exam.examDate,
+        startTime: exam.startTime || "08:00",
+        endTime: exam.endTime || "10:00",
+        room: exam.room || "",
+        status: exam.status,
+        subject: null,
+        class: null,
+        teacher: null,
+        score: scoreData?.score ?? null,
+        grade: scoreData?.grade ?? null,
+        scoreStatus: scoreData?.status ?? "pending",
+        note: scoreData?.note ?? "",
+        isPublicExam: true,
+      });
+    });
+
     // Sắp xếp theo ngày thi mới nhất
     result.sort((a, b) => new Date(b.examDate).getTime() - new Date(a.examDate).getTime());
-
-    console.log("Result count:", result.length);
 
     res.status(200).json({
       success: true,
@@ -214,6 +239,16 @@ export const createScore = async (
   try {
     const { student, exam, score, note } = req.body;
 
+    // Lấy thông tin exam để tạo thông báo
+    const examInfo = await Exam.findById(exam).populate("subject", "name");
+    const subjectName = (examInfo?.subject as any)?.name;
+    const examName = examInfo?.name || "Kỳ thi";
+    
+    // Tạo message phù hợp cho kỳ thi có môn hoặc kỳ thi chung
+    const scoreMessage = subjectName 
+      ? `Điểm môn ${subjectName} - ${examName}: ${score} điểm`
+      : `Điểm kỳ thi "${examName}": ${score} điểm`;
+
     // Check if score already exists
     let existingScore = await Score.findOne({ student, exam });
 
@@ -226,6 +261,16 @@ export const createScore = async (
       }
       existingScore.enteredAt = new Date();
       await existingScore.save();
+
+      // Tạo thông báo cập nhật điểm cho sinh viên
+      await Notification.create({
+        title: "Điểm đã được cập nhật",
+        message: scoreMessage,
+        type: "score",
+        targetUser: student,
+        relatedId: existingScore._id,
+        relatedModel: "Score",
+      });
 
       const populatedScore = await Score.findById(existingScore._id)
         .populate("student", "name email studentId")
@@ -244,6 +289,16 @@ export const createScore = async (
         score,
         note,
         enteredBy: req.user?._id,
+      });
+
+      // Tạo thông báo điểm mới cho sinh viên
+      await Notification.create({
+        title: "Bạn có điểm mới",
+        message: scoreMessage,
+        type: "score",
+        targetUser: student,
+        relatedId: newScore._id,
+        relatedModel: "Score",
       });
 
       const populatedScore = await Score.findById(newScore._id)
@@ -315,6 +370,11 @@ export const importScores = async (
       return;
     }
 
+    // Lấy thông tin exam để tạo thông báo
+    const examInfo = await Exam.findById(examId).populate("subject", "name");
+    const subjectName = (examInfo?.subject as any)?.name;
+    const examName = examInfo?.name || "Kỳ thi";
+
     const results = {
       success: 0,
       failed: 0,
@@ -343,6 +403,11 @@ export const importScores = async (
           exam: examId 
         });
 
+        // Tạo message phù hợp
+        const scoreMessage = subjectName 
+          ? `Điểm môn ${subjectName} - ${examName}: ${scoreValue} điểm`
+          : `Điểm kỳ thi "${examName}": ${scoreValue} điểm`;
+
         if (existingScore) {
           // Update
           existingScore.score = scoreValue;
@@ -352,14 +417,34 @@ export const importScores = async (
           }
           existingScore.enteredAt = new Date();
           await existingScore.save();
+
+          // Tạo thông báo cập nhật điểm
+          await Notification.create({
+            title: "Điểm đã được cập nhật",
+            message: scoreMessage,
+            type: "score",
+            targetUser: item.studentId,
+            relatedId: existingScore._id,
+            relatedModel: "Score",
+          });
         } else {
           // Create new
-          await Score.create({
+          const newScore = await Score.create({
             student: item.studentId,
             exam: examId,
             score: scoreValue,
             note: item.note || "",
             enteredBy: req.user?._id,
+          });
+
+          // Tạo thông báo điểm mới
+          await Notification.create({
+            title: "Bạn có điểm mới",
+            message: scoreMessage,
+            type: "score",
+            targetUser: item.studentId,
+            relatedId: newScore._id,
+            relatedModel: "Score",
           });
         }
         results.success++;

@@ -4,7 +4,7 @@ export interface IExam extends Document {
   _id: mongoose.Types.ObjectId;
   code: string; // Mã kỳ thi (unique)
   name: string; // Tên kỳ thi
-  subject: mongoose.Types.ObjectId; // Môn thi
+  subject?: mongoose.Types.ObjectId; // Môn thi (không bắt buộc - kỳ thi chung)
   examDate: Date; // Ngày thi
   startTime: string; // Giờ bắt đầu (HH:mm)
   endTime: string; // Giờ kết thúc (HH:mm)
@@ -14,6 +14,8 @@ export interface IExam extends Document {
   academicYear: string; // Năm học
   status: "upcoming" | "ongoing" | "completed" | "cancelled";
   description?: string;
+  participants: mongoose.Types.ObjectId[]; // Danh sách sinh viên đăng ký (cho kỳ thi chung)
+  maxParticipants?: number; // Số lượng tối đa
   createdBy: mongoose.Types.ObjectId; // Admin tạo
   createdAt: Date;
   updatedAt: Date;
@@ -34,7 +36,7 @@ const examSchema = new Schema<IExam>(
     subject: {
       type: Schema.Types.ObjectId,
       ref: "Subject",
-      required: [true, "Môn thi là bắt buộc"],
+      // Không bắt buộc - kỳ thi chung không cần môn
     },
     examDate: {
       type: Date,
@@ -83,6 +85,14 @@ const examSchema = new Schema<IExam>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    participants: [{
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    }],
+    maxParticipants: {
+      type: Number,
+      default: 100,
     },
   },
   {
